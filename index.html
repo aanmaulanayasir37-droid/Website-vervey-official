@@ -5,21 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Website Elcida</title>
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
         body {
             font-family: Arial, sans-serif;
-            background-color: #1a1a2e;
             color: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
+            /* Background Gambar Elcida Full Color */
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), 
+                        url('images/1000246416.jpg') no-repeat center center fixed;
+            background-size: cover;
         }
         .card {
-            background-color: #16213e;
+            background: rgba(22, 33, 62, 0.85);
+            backdrop-filter: blur(10px);
             padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
             text-align: center;
             max-width: 400px;
             width: 90%;
@@ -27,28 +36,31 @@
         .btn {
             border: none;
             padding: 12px 20px;
-            font-size: 15px;
-            border-radius: 6px;
+            font-size: 14px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
-            transition: opacity 0.3s;
+            transition: all 0.3s ease;
             text-decoration: none;
             display: inline-block;
-            margin: 8px 4px;
+            margin: 6px 4px;
         }
         .btn:hover {
-            opacity: 0.85;
+            opacity: 0.9;
+            transform: translateY(-2px);
         }
         .btn-discord {
             background-color: #5865F2;
             color: white;
+            box-shadow: 0 4px 12px rgba(88, 101, 242, 0.4);
         }
         .btn-danger {
             background-color: #e74c3c;
             color: white;
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
         }
         .btn-nav {
-            background-color: #0f3460;
+            background-color: rgba(15, 52, 96, 0.9);
             color: white;
             border: 1px solid #e94560;
         }
@@ -56,15 +68,29 @@
             margin-top: 15px;
         }
         .avatar {
-            width: 80px;
-            height: 80px;
+            width: 85px;
+            height: 85px;
             border-radius: 50%;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            border: 2px solid #e94560;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
         .menu-container {
             margin-top: 20px;
             padding-top: 15px;
-            border-top: 1px solid #1f4068;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        p {
+            font-size: 14px;
+            color: #dddddd;
         }
     </style>
 </head>
@@ -78,8 +104,8 @@
 
         <div id="user-profile" class="user-info" style="display: none;">
             <img id="user-avatar" class="avatar" src="" alt="Avatar">
-            <h2 id="user-name"></h2>
-            <p id="user-id"></p>
+            <h2 id="user-name" style="font-size: 18px; margin-bottom: 4px;"></h2>
+            <p id="user-id" style="font-size: 12px; color: #aaa; margin-bottom: 10px;"></p>
             
             <div class="menu-container">
                 <a href="galeri.html" class="btn btn-nav">Galeri</a>
@@ -87,7 +113,7 @@
                 <a href="certs.html" class="btn btn-nav">Certs</a>
             </div>
 
-            <button class="btn btn-danger" onclick="logout()" style="margin-top: 15px;">Logout</button>
+            <button class="btn btn-danger" onclick="logout()" style="margin-top: 15px; width: 100%;">Logout</button>
         </div>
     </div>
 
