@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Elcida</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a1a2e;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background-color: #16213e;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+        .btn {
+            border: none;
+            padding: 12px 20px;
+            font-size: 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: opacity 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            margin: 8px 4px;
+        }
+        .btn:hover {
+            opacity: 0.85;
+        }
+        .btn-discord {
+            background-color: #5865F2;
+            color: white;
+        }
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .btn-nav {
+            background-color: #0f3460;
+            color: white;
+            border: 1px solid #e94560;
+        }
+        .user-info {
+            margin-top: 15px;
+        }
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+        .menu-container {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #1f4068;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1 id="app-title" style="cursor: pointer; user-select: none;">Website Elcida</h1>
+        <p id="welcome-text">Silahkan login menggunakan akun Discord kamu.</p>
+
+        <button id="login-btn" class="btn btn-discord" onclick="loginDiscord()">Login dengan Discord</button>
+
+        <div id="user-profile" class="user-info" style="display: none;">
+            <img id="user-avatar" class="avatar" src="" alt="Avatar">
+            <h2 id="user-name"></h2>
+            <p id="user-id"></p>
+            
+            <div class="menu-container">
+                <a href="galeri.html" class="btn btn-nav">Galeri</a>
+                <a href="cerita.html" class="btn btn-nav">Cerita</a>
+                <a href="certs.html" class="btn btn-nav">Certs</a>
+            </div>
+
+            <button class="btn btn-danger" onclick="logout()" style="margin-top: 15px;">Logout</button>
+        </div>
+    </div>
+
+    <script>
+        const DISCORD_CLIENT_ID = "1547833891098730571";
+        const REDIRECT_URI = "https://aanmaulanayasir37-droid.github.io/Website-elcida/";
+
+        let clickCount = 0;
+        document.getElementById('app-title').addEventListener('click', () => {
+            clickCount++;
+            if (clickCount === 3) {
+                const code = prompt("Masukkan passcode rahasia:");
+                if (code === "123") {
+                    window.location.href = "developer.html";
+                } else {
+                    alert("Passcode salah!");
+                }
+                clickCount = 0;
+            }
+        });
+
+        function loginDiscord() {
+            const oauthUrl = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=identify`;
+            window.location.href = oauthUrl;
+        }
+
+        function showUserData(user) {
+            document.getElementById('login-btn').style.display = 'none';
+            document.getElementById('welcome-text').innerText = 'Selamat datang kembali!';
+            document.getElementById('user-profile').style.display = 'block';
+            document.getElementById('user-name').innerText = user.name;
+            document.getElementById('user-id').innerText = `ID: ${user.id}`;
+            document.getElementById('user-avatar').src = user.avatar;
+        }
+
+        function handleOAuth() {
+            const savedUser = localStorage.getItem('elcida_user');
+            if (savedUser) {
+                showUserData(JSON.parse(savedUser));
+                return;
+            }
+
+            const fragment = new URLSearchParams(window.location.hash.slice(1));
+            const accessToken = fragment.get('access_token');
+
+            if (accessToken) {
+                fetch('https://discord.com/api/users/@me', {
+                    headers: { authorization: `Bearer ${accessToken}` }
+                })
+                .then(res => res.json())
+                .then(response => {
+                    const { username, discriminator, avatar, id } = response;
+                    const avatarUrl = avatar 
+                        ? `https://cdn.discordapp.com/avatars/${id}/${avatar}.png`
+                        : `https://cdn.discordapp.com/embed/avatars/0.png`;
+
+                    const userData = {
+                        name: `${username}#${discriminator}`,
+                        id: id,
+                        avatar: avatarUrl
+                    };
+
+                    localStorage.setItem('elcida_user', JSON.stringify(userData));
+                    showUserData(userData);
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                })
+                .catch(console.error);
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('elcida_user');
+            window.location.reload();
+        }
+
+        window.onload = handleOAuth;
+    </script>
+</body>
+</html>

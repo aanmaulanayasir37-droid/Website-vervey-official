@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elcida - Developer Room</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Roboto, Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), 
+                  url('1000246369.png') no-repeat center center fixed;
+      background-size: cover;
+      color: #e0e0e0;
+      min-height: 100vh;
+    }
+
+    /* Header Navigasi */
+    header {
+      background: rgba(10, 10, 10, 0.95);
+      border-bottom: 1px solid #333;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(8px);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .menu-toggle {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+    }
+
+    header h1 {
+      color: #fff;
+      font-size: 16px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border-left: 3px solid #fff;
+      padding-left: 10px;
+      line-height: 1.2;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    nav.top-nav {
+      display: flex;
+      gap: 15px;
+    }
+
+    nav.top-nav a {
+      color: #aaa;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: all 0.3s;
+      padding-bottom: 3px;
+    }
+
+    nav.top-nav a:hover, nav.top-nav a.active {
+      color: #fff;
+      border-bottom: 2px solid #fff;
+    }
+
+    /* Sidebar & Modal Overlay */
+    .sidebar-overlay, .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 200;
+    }
+
+    .sidebar-overlay.active, .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Sidebar Offcanvas */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -260px;
+      width: 260px;
+      height: 100%;
+      background: #121212;
+      border-right: 1px solid #333;
+      z-index: 201;
+      transition: left 0.3s ease;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar.active {
+      left: 0;
+    }
+
+    .sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #333;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+
+    .sidebar-header h2 {
+      font-size: 15px;
+      color: #fff;
+      letter-spacing: 1px;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: #aaa;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .sidebar-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sidebar-menu a {
+      color: #ccc;
+      text-decoration: none;
+      font-size: 14px;
+      padding: 10px 12px;
+      border-radius: 4px;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .sidebar-menu a:hover, .sidebar-menu a.active {
+      background: #222;
+      color: #fff;
+    }
+
+    .sidebar-divider {
+      height: 1px;
+      background: #333;
+      margin: 10px 0;
+    }
+
+    /* Form Password Lock */
+    .login-container {
+      max-width: 400px;
+      margin: 80px auto;
+      padding: 25px;
+      background: rgba(18, 18, 20, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      text-align: center;
+    }
+
+    .login-container h2 {
+      color: #fff;
+      font-size: 18px;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+
+    .login-container p {
+      font-size: 12px;
+      color: #aaa;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group input {
+      width: 100%;
+      background: #1a1a1c;
+      border: 1px solid #333;
+      border-radius: 6px;
+      color: #fff;
+      padding: 12px;
+      font-size: 14px;
+      text-align: center;
+      letter-spacing: 2px;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #fff;
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: #ffffff;
+      color: #000;
+      border: none;
+      padding: 10px;
+      font-size: 13px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    .error-msg {
+      color: #ff5555;
+      font-size: 11px;
+      margin-top: 10px;
+      display: none;
+    }
+
+    /* Panel Kontrol Developer */
+    .dev-panel {
+      display: none;
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 0 16px;
+    }
+
+    .dev-card {
+      background: rgba(18, 18, 20, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      backdrop-filter: blur(8px);
+    }
+
+    .dev-card h3 {
+      color: #fff;
+      font-size: 16px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid #333;
+      padding-bottom: 8px;
+    }
+
+    .dev-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn-dev {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      padding: 8px 14px;
+      font-size: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-dev:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #f87171;
+    }
+
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, 0.4);
+    }
+
+    /* Modal KTA Pop-Up */
+    .kta-modal-wrapper {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.9);
+      width: 92%;
+      max-width: 440px;
+      background: rgba(14, 14, 16, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
+      border-radius: 16px;
+      padding: 20px;
+      backdrop-filter: blur(12px);
+      z-index: 205;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .kta-modal-wrapper.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .kta-card {
+      background: rgba(8, 8, 10, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 20px 18px 15px;
+      margin-bottom: 16px;
+    }
+
+    .kta-header { text-align: center; margin-bottom: 20px; }
+    .kta-header h2 { font-size: 15px; color: #fff; letter-spacing: 1.5px; }
+    .kta-header p { font-size: 10px; color: #888; }
+    .kta-body { display: flex; gap: 15px; margin-bottom: 18px; }
+    .profile-section { display: flex; flex-direction: column; align-items: center; width: 105px; }
+    .avatar-box { width: 100px; height: 100px; border-radius: 12px; overflow: hidden; border: 1px solid #333; background: #1a1a1a; margin-bottom: 8px; }
+    .avatar-box img { width: 100%; height: 100%; object-fit: cover; }
+    .btn-change-photo { width: 100%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; font-size: 10px; padding: 6px 0; border-radius: 6px; cursor: pointer; }
+    #fileInput { display: none; }
+    .info-section { flex: 1; display: flex; flex-direction: column; gap: 6px; font-size: 11px; justify-content: center; }
+    .info-row { display: flex; justify-content: space-between; }
+    .info-label { color: #888; font-size: 10px; }
+    .info-value { color: #fff; font-weight: 700; }
+    .clickable-text { cursor: pointer; }
+    .clickable-text:hover { text-shadow: 0 0 8px rgba(255,255,255,0.6); }
+    .status-active { color: #4ade80; }
+    .kta-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px; }
+    .official-tag { font-size: 9px; color: #666; }
+    .badge-verified { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.25); color: #fff; font-size: 10px; padding: 4px 10px; border-radius: 6px; }
+    .btn-close-kta { width: 100%; background: #fff; color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <!-- Header Utama -->
+  <header>
+    <div class="header-left">
+      <button class="menu-toggle" onclick="toggleSidebar()" aria-label="Menu">☰</button>
+      <h1>ELCIDA GALLERY</h1>
+    </div>
+
+    <div class="header-right">
+      <nav class="top-nav">
+        <a href="index.html">Beranda</a>
+        <a href="galeri.html">Galeri Gambar</a>
+        <a href="cerita.html">Cerita</a>
+        <a href="developer.html" class="active">Dev</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Sidebar Garis Tiga -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h2>MENU ELCIDA</h2>
+      <button class="close-btn" onclick="toggleSidebar()">&times;</button>
+    </div>
+    <div class="sidebar-menu">
+      <a href="index.html">🏠 Beranda</a>
+      <a href="galeri.html">🖼️ Galeri Gambar</a>
+      <a href="cerita.html">📖 Cerita</a>
+      <a href="developer.html" class="active">🛠️ Developer Room</a>
+      <div class="sidebar-divider"></div>
+      <a href="#" onclick="toggleSidebar(); openKtaModal(); return false;">💳 Profil Saya (KTA)</a>
+    </div>
+  </div>
+
+  <!-- Form Verifikasi Password Developer -->
+  <div class="login-container" id="loginBox">
+    <h2>DEVELOPER ROOM</h2>
+    <p>Masukkan kata sandi khusus untuk mengakses panel kontrol developer.</p>
+    <form onsubmit="verifyPassword(event)">
+      <div class="form-group">
+        <input type="password" id="devPass" placeholder="Masukkan Password" required>
+      </div>
+      <button type="submit" class="btn-submit">MASUK</button>
+      <div class="error-msg" id="errorMsg">Password salah! Silakan coba lagi.</div>
+    </form>
+  </div>
+
+  <!-- Panel Developer (Terbuka Jika Password Benar) -->
+  <div class="dev-panel" id="devPanel">
+    <div class="dev-card">
+      <h3>🛠️ Pengaturan User & Role</h3>
+      <div class="dev-actions">
+        <button class="btn-dev" onclick="setDevRole('ADMIN')">Ubah Role ke ADMIN</button>
+        <button class="btn-dev" onclick="setDevRole('DEVELOPER')">Ubah Role ke DEVELOPER</button>
+        <button class="btn-dev" onclick="setDevRole('AUTHOR')">Ubah Role ke AUTHOR</button>
+        <button class="btn-dev" onclick="setDevRole('ANGGOTA')">Ubah Role ke ANGGOTA</button>
+      </div>
+    </div>
+
+    <div class="dev-card">
+      <h3>📁 Manajemen LocalStorage</h3>
+      <div class="dev-actions">
+        <button class="btn-dev btn-danger" onclick="clearStories()">Hapus Semua Cerita</button>
+        <button class="btn-dev btn-danger" onclick="resetProfile()">Reset Profil & KTA</button>
+        <button class="btn-dev btn-danger" onclick="clearAllData()">Reset Semua LocalStorage</button>
+      </div>
+    </div>
+
+    <div class="dev-card">
+      <h3>🔒 Sesi Developer</h3>
+      <div class="dev-actions">
+        <button class="btn-dev" onclick="logoutDev()">Keluar dari Dev Room</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL POP-UP KTA -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeKtaModal()"></div>
+  
+  <div class="kta-modal-wrapper" id="ktaModal">
+    <div class="kta-card">
+      <div class="kta-header">
+        <h2>KARTU TANDA ANGGOTA</h2>
+        <p>KOMUNITAS ELCIDA GALLERY</p>
+      </div>
+
+      <div class="kta-body">
+        <div class="profile-section">
+          <div class="avatar-box">
+            <img src="1000246369.png" id="profileImg" alt="Foto Profil">
+          </div>
+          <button class="btn-change-photo" onclick="document.getElementById('fileInput').click()">GANTI FOTO</button>
+          <input type="file" id="fileInput" accept="image/*" onchange="previewImage(event)">
+        </div>
+
+        <div class="info-section">
+          <div class="info-row"><span class="info-label">NIK (ID)</span><span class="info-value" id="profileNik">ELC-000000</span></div>
+          <div class="info-row"><span class="info-label">NAMA</span><span class="info-value clickable-text" id="profileName" onclick="editName()">zyresukaisekai</span></div>
+          <div class="info-row"><span class="info-label">STATUS</span><span class="info-value status-active">MEMBER AKTIF</span></div>
+          <div class="info-row"><span class="info-label">DOMISILI</span><span class="info-value">ELCIDA GALLERY</span></div>
+          <div class="info-row"><span class="info-label">BERLAKU</span><span class="info-value">SEUMUR HIDUP</span></div>
+          <div class="info-row"><span class="info-label">ROLE</span><span class="info-value clickable-text" id="profileRole" onclick="editRole()">ANGGOTA</span></div>
+        </div>
+      </div>
+
+      <div class="kta-footer">
+        <span class="official-tag">ELCIDA OFFICIAL MEMBER CARD</span>
+        <div class="badge-verified">VERIFIED ✓</div>
+      </div>
+    </div>
+
+    <button class="btn-close-kta" onclick="closeKtaModal()">TUTUP</button>
+  </div>
+
+  <script>
+    // Password default (Bisa diganti sesuai keinginan)
+    const DEV_PASSWORD = "https://textures.minecraft.net/texture/a286d0a756a92c482f141c130862eb825db99e4e4068ca8de33b43d2b0b294dd";
+
+    document.addEventListener("DOMContentLoaded", function () {
+      initUserProfile();
+      checkDevSession();
+    });
+
+    function checkDevSession() {
+      if (sessionStorage.getItem("elcida_dev_authenticated") === "true") {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("devPanel").style.display = "block";
+      }
+    }
+
+    function verifyPassword(e) {
+      e.preventDefault();
+      const inputPass = document.getElementById("devPass").value;
+      if (inputPass === DEV_PASSWORD) {
+        sessionStorage.setItem("elcida_dev_authenticated", "true");
+        document.getElementById("errorMsg").style.display = "none";
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("devPanel").style.display = "block";
+      } else {
+        document.getElementById("errorMsg").style.display = "block";
+      }
+    }
+
+    function logoutDev() {
+      sessionStorage.removeItem("elcida_dev_authenticated");
+      location.reload();
+    }
+
+    /* Fitur Akses Dev */
+    function setDevRole(roleName) {
+      localStorage.setItem("elcida_user_role", roleName);
+      document.getElementById("profileRole").innerText = roleName;
+      alert("Role berhasil diubah menjadi: " + roleName);
+    }
+
+    function clearStories() {
+      if (confirm("Apakah Anda yakin ingin menghapus semua cerita buatan user?")) {
+        localStorage.removeItem("elcida_stories");
+        alert("Semua data cerita berhasil dihapus.");
+      }
+    }
+
+    function resetProfile() {
+      if (confirm("Reset profil dan foto KTA kembali ke awal?")) {
+        localStorage.removeItem("elcida_user_name");
+        localStorage.removeItem("elcida_user_role");
+        localStorage.removeItem("elcida_user_photo");
+        localStorage.removeItem("elcida_user_nik");
+        alert("Profil telah direset.");
+        initUserProfile();
+      }
+    }
+
+    function clearAllData() {
+      if (confirm("Peringatan: Ini akan menghapus SELURUH data LocalStorage situs ini! Lanjutkan?")) {
+        localStorage.clear();
+        alert("LocalStorage telah dikosongkan.");
+        location.reload();
+      }
+    }
+
+    /* Fungsi Utama KTA & Sidebar */
+    function initUserProfile() {
+      let userNik = localStorage.getItem("elcida_user_nik");
+      if (!userNik) {
+        const randomDigits = Math.floor(100000 + Math.random() * 900000);
+        userNik = "ELC-" + randomDigits;
+        localStorage.setItem("elcida_user_nik", userNik);
+      }
+      document.getElementById("profileNik").innerText = userNik;
+
+      let userName = localStorage.getItem("elcida_user_name");
+      if (userName) {
+        document.getElementById("profileName").innerText = userName;
+      }
+
+      let userRole = localStorage.getItem("elcida_user_role");
+      if (userRole) {
+        document.getElementById("profileRole").innerText = userRole;
+      }
+
+      let userPhoto = localStorage.getItem("elcida_user_photo");
+      if (userPhoto) {
+        document.getElementById("profileImg").src = userPhoto;
+      }
+    }
+
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('active');
+      document.getElementById('sidebarOverlay').classList.toggle('active');
+    }
+
+    function openKtaModal() {
+      document.getElementById('ktaModal').classList.add('active');
+      document.getElementById('modalOverlay').classList.add('active');
+    }
+
+    function closeKtaModal() {
+      document.getElementById('ktaModal').classList.remove('active');
+      document.getElementById('modalOverlay').classList.remove('active');
+    }
+
+    function previewImage(event) {
+      const reader = new FileReader();
+      reader.onload = function() {
+        const photoData = reader.result;
+        document.getElementById('profileImg').src = photoData;
+        localStorage.setItem("elcida_user_photo", photoData);
+      };
+      if (event.target.files[0]) {
+        reader.readAsDataURL(event.target.files[0]);
+      }
+    }
+
+    function editName() {
+      const currentName = document.getElementById('profileName').innerText;
+      const newName = prompt('Masukkan nama baru:', currentName);
+      if (newName && newName.trim() !== '') {
+        const trimmedName = newName.trim();
+        document.getElementById('profileName').innerText = trimmedName;
+        localStorage.setItem("elcida_user_name", trimmedName);
+      }
+    }
+
+    function editRole() {
+      const currentRole = document.getElementById('profileRole').innerText;
+      const newRole = prompt('Masukkan role baru (misal: ANGGOTA, AUTHOR, ADMIN):', currentRole);
+      if (newRole && newRole.trim() !== '') {
+        const trimmedRole = newRole.trim().toUpperCase();
+        document.getElementById('profileRole').innerText = trimmedRole;
+        localStorage.setItem("elcida_user_role", trimmedRole);
+      }
+    }
+  </script>
+
+</body>
+</html>
